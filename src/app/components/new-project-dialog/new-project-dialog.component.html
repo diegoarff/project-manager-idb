@@ -1,0 +1,74 @@
+<p-dialog
+  header="Add a new project"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [closable]="false"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="newProjectForm" (submit)="onSubmit()">
+      <div class="p-fluid content">
+        <div class="p-field field">
+          <label for="projectTitle">Title</label>
+          <input
+            id="projectTitle"
+            type="text"
+            pInputText
+            formControlName="projectTitle"
+            [required]="true"
+          />
+        </div>
+        <div class="p-field field">
+          <label for="projectDescription">Description</label>
+          <input
+            id="projectDescription"
+            type="text"
+            pInputText
+            formControlName="projectDescription"
+            [required]="true"
+          />
+        </div>
+        <div class="p-field field">
+          <label for="projectStartDate">Start date</label>
+          <p-calendar
+            id="projectStartDate"
+            formControlName="projectStartDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            [inline]="true"
+            [required]="true"
+          ></p-calendar>
+        </div>
+        <div class="p-field field">
+          <label for="projectEndDate">End date</label>
+          <p-calendar
+            id="projectEndDate"
+            formControlName="projectEndDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            [inline]="true"
+            [required]="true"
+          ></p-calendar>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="btns">
+      <p-button
+        label="Create"
+        icon="pi pi-check"
+        styleClass="p-button-outlined p-button-primary"
+        type="submit"
+      ></p-button>
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        styleClass="p-button-outlined p-button-danger"
+        (click)="close.emit()"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
