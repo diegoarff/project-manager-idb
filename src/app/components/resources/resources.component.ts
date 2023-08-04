@@ -6,5 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./resources.component.css']
 })
 export class ResourcesComponent {
+  recreate = false;
+  newResourceVisible: boolean = false;
 
+  onNewResourceNotify() {
+    this.onNewResourceClose(); // Close dialog
+    this.recreate = true;
+  }
+
+  onNewResourceClose() {
+    this.newResourceVisible = false;
+  }
 }

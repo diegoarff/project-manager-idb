@@ -1,0 +1,67 @@
+<p-dialog header="Create a notification" [(visible)]="visible" [modal]="true" [style]="{ width: '30vw' }"
+    [closable]="false">
+
+    <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid content">
+
+            <p-dropdown formControlName="selectedProject" [options]="projects" optionLabel="title" [filter]="true"
+                (onChange)="onSelectedProject()" filterBy="title" placeholder="Select a project"></p-dropdown>
+
+            <p-dropdown formControlName="selectedResource" [(ngModel)]="selectedResource" [options]="resources"
+                optionLabel="name" [filter]="true" filterBy="name" placeholder="Select a resource">
+
+                <ng-template pTemplate="selectedItem">
+                    <div *ngIf="selectedResource">
+                        <div>{{ selectedResource.name }} {{selectedResource.lastName}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-resource pTemplate="item">
+                    <div>
+                        <div>{{ resource.name }} {{resource.lastName}}</div>
+                    </div>
+                </ng-template>
+
+            </p-dropdown>
+
+            <div>
+                <label for="notificationMessage">Message</label>
+                <input id="notificationMessage" type="text" pInputText formControlName="notificationMessage"
+                    [required]="true" />
+            </div>
+
+            <div>
+                <label for="progression">Progression</label>
+                <p-slider [max]="maxProgression" [min]="1" formControlName="progression"></p-slider>
+                <span>{{notificationForm.value.progression}}</span>
+            </div>
+            <div class="p-field field">
+                <label for="hoursSpent">Hours spent</label>
+                <input id="hoursSpent" type="number" pInputText formControlName="hoursSpent" [required]="true" />
+            </div>
+            <div>
+                <label for="date">Start date</label>
+                <p-calendar id="date" formControlName="date" dateFormat="dd/mm/yy" [showIcon]="true"
+                    [showButtonBar]="true" [inline]="true" [required]="true"></p-calendar>
+            </div>
+            
+
+
+            <div class="btns">
+                <p-button label="Create" icon="pi pi-check" styleClass="p-button-outlined p-button-primary"
+                    type="submit"></p-button>
+                <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-outlined p-button-danger"
+                    (click)="close.emit()"></p-button>
+            </div>
+
+
+            
+
+        </div>
+
+
+
+    </form>
+
+</p-dialog>
+
+<p-toast></p-toast>

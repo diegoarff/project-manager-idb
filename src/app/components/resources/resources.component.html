@@ -1,1 +1,15 @@
-<p>resources works!</p>
+<section class="btn-section">
+    <p-button label="New resource" icon="pi pi-plus" (click)="this.newResourceVisible = true"></p-button>
+</section>
+
+<app-resources-dialog 
+[visible]="this.newResourceVisible" 
+(close)="this.newResourceVisible = false"
+(notify)="onNewResourceNotify()"
+
+>
+</app-resources-dialog>
+
+<div class="table">
+    <app-resources-table [recreate]="recreate" ></app-resources-table>
+</div>

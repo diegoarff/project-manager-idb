@@ -1,0 +1,39 @@
+<p-dialog header="Assign a resource" [(visible)]="visible" [modal]="true" [style]="{ width: '50vw', height: '50vh' }"
+    [closable]="false">
+
+    <form [formGroup]="projectResourceForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid content">
+            <p-dropdown formControlName="selectedProject" [options]="projects" optionLabel="title" [filter]="true"
+                filterBy="title" placeholder="Select a project"></p-dropdown>
+
+            <p-dropdown formControlName="selectedResource" [(ngModel)]="selectedResource" [options]="resources" optionLabel="name" [filter]="true"
+                filterBy="name" placeholder="Select a resource">
+
+                <ng-template pTemplate="selectedItem">
+                    <div *ngIf="selectedResource">
+                        <div>{{ selectedResource.name }} {{selectedResource.lastName}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-resource pTemplate="item">
+                    <div >
+                        <div>{{ resource.name }} {{resource.lastName}}</div>
+                    </div>
+                </ng-template>
+
+            </p-dropdown>
+
+
+
+            <div class="btns">
+                <p-button label="Add" icon="pi pi-check" styleClass="p-button-outlined p-button-primary"
+                    type="submit"></p-button>
+                <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-outlined p-button-danger"
+                    (click)="close.emit()"></p-button>
+            </div>
+        </div>
+
+    </form>
+
+</p-dialog>
+
+<p-toast></p-toast>

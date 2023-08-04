@@ -1,66 +1,171 @@
-import { Injectable } from '@angular/core';
-import Dexie from 'dexie';
+import Dexie, { Table } from 'dexie';
+import { Project } from '../models/projects';
+import { Resources, Notifications } from '../models/Resources';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class IndexedDbService extends Dexie {
-  constructor() {
-    super('myIndexedDB'); // Name of your IndexedDB database
-    this.version(1).stores({
-      tableName: '++id, columnName1, columnName2, ...', // Define your tables and columns here
-    });
-  }
-
-  // Method to add a new record to the database
-  async addItem(table: string, item: any): Promise<void> {
-    try {
-      await this[table].add(item);
-      console.log('Item added successfully');
-    } catch (error) {
-      console.error('Error adding item', error);
-    }
-  }
-
-  // Method to get all records from a table
-  async getAllItems(table: string): Promise<any[]> {
-    try {
-      const items = await this[table].toArray();
-      return items;
-    } catch (error) {
-      console.error('Error getting items', error);
-      return [];
-    }
-  }
-
-  // Method to get a record by its ID
-  async getItemById(table: string, id: any): Promise<any> {
-    try {
-      const item = await this[table].get(id);
-      return item;
-    } catch (error) {
-      console.error('Error getting item', error);
-      return null;
-    }
-  }
-
-  // Method to update a record in the database
-  async updateItem(table: string, id: any, updates: any): Promise<void> {
-    try {
-      await this[table].update(id, updates);
-      console.log('Item updated successfully');
-    } catch (error) {
-      console.error('Error updating item', error);
-    }
-  }
-
-  // Method to delete a record from the database
-  async deleteItem(table: string, id: any): Promise<void> {
-    try {
-      await this[table].delete(id);
-      console.log('Item deleted successfully');
-    } catch (error) {
-      console.error('Error deleting item', error);
-    }
-  }
+export interface TodoList {
+  id?: number;
+  title: string;
 }
+export interface TodoItem {
+  id?: number;
+  todoListId: number;
+  title: string;
+  done?: boolean;
+}
+
+export class AppDB extends Dexie {
+  projects!: Table<Project, number>;
+  resources!: Table<Resources, number>;
+
+  constructor() {
+    super('myProjectDB');
+    this.version(3).stores({
+      projects: '++id',
+      resources: '++id',
+      notifications: '++id',
+    });
+    this.on('populate', () => this.populate());
+  }
+
+  async populate() {
+    await db.projects.bulkAdd([
+      {
+        title: 'New Website',
+        description: 'Build a new company website',
+        startDate: new Date('2023-02-01'),
+        endDate: new Date('2023-04-30'),
+        progress: 25,
+        resourcesId: [],
+        notifications: [],
+    
+      },
+      {
+        title: 'Mobile App',
+        description: 'Build a cross-platform mobile app',
+        startDate: new Date('2023-03-15'),
+        endDate: new Date('2023-08-30'),
+        progress: 10,
+        resourcesId: [],
+        notifications: [],
+      },
+      {
+        title: 'CRM System',
+        description: 'Implement a new CRM system',
+        startDate: new Date('2023-04-01'),
+        endDate: new Date('2023-12-01'),
+        progress: 50,
+        resourcesId: [],
+        notifications: [],
+      },
+    ]);
+  }
+
+  async getProjects(): Promise<Project[]> {
+    return await db.projects.toArray();
+  }
+
+
+  async addProject(project: Project): Promise<number> {
+    return await db.projects.add(project);
+  }
+
+  async deleteProject(id: number): Promise<void> {
+    await db.projects.delete(id);
+  }
+
+
+  async getResources(): Promise<Resources[]> {
+    return await db.resources.toArray();
+  }
+
+  async addResource(resource: Resources): Promise<number> {
+    return await db.resources.add(resource);
+  }
+
+  async deleteResource(id: number): Promise<void> {
+    await db.resources.delete(id);
+
+    // Eliminar el recurso de todos los proyectos
+    let projects = await db.projects.toArray();
+    for(let project of projects){
+      if(project.resourcesId.includes(id)){
+        project.resourcesId = project.resourcesId.filter(idResource => idResource != id);
+        await db.projects.put(project);
+      }
+    }
+  }
+
+  async isResourceInProject(idProject:number, idResource:number){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return false;
+
+    if(project.resourcesId.includes(idResource)){
+      return true;
+    }
+    return false;
+  }
+
+  async addResourceToProject(idProject:number, idResource:number){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return false;
+
+    project.resourcesId.push(idResource);
+    await db.projects.put(project);
+    return true;
+  }
+
+  async getProjectResources(idProject:number){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return [];
+
+    let resources: Resources[] = [];
+    for(let id of project.resourcesId){
+      let resource = await db.resources.get(id);
+      if(resource){
+        resources.push(resource);
+      }
+    }
+    return resources;
+  }
+
+  async deleteResourceFromProject(idProject:number, idResource:number){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return false;
+
+    project.resourcesId = project.resourcesId.filter(id => id != idResource);
+    await db.projects.put(project);
+    return true;
+  }
+
+  async addNotificationToProject(idProject:number, notification:Notifications){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return false;
+
+    project.notifications.push(notification);
+    project.progress += notification.progression;
+    await db.projects.put(project);
+    return true;
+  }
+
+  async isProjectCompleted(idProject:number){
+    let project = await db.projects.get(idProject);
+
+    if(!project) return false;
+
+    if(project.progress == 100){
+      return true;
+    }
+    return false;
+  }
+
+
+
+
+}
+
+export const db = new AppDB();

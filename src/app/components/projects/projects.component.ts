@@ -7,8 +7,36 @@ import { Component } from '@angular/core';
 })
 export class ProjectsComponent {
   newProjectVisible: boolean = false;
+  recreate = false;
+  assignResourceVisible: boolean = false;
+  notificationVisible: boolean = false;
+
 
   onNewProjectClose() {
     this.newProjectVisible = false;
   }
+  onNewProjectNotify() {
+    this.onNewProjectClose(); // Close dialog
+    this.recreate = true;
+  }
+
+  onNotificationClose() {
+    this.notificationVisible = false;
+  }
+
+  onCreateNotification() {
+    this.notificationVisible = true;
+  }
+
+  onNotificationRefresh() {
+    this.notificationVisible = false;
+    this.recreate = true;
+  }
+
+
+  onAssignResourceClose() {
+    this.assignResourceVisible = false;
+  }
+  
+
 }

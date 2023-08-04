@@ -1,0 +1,65 @@
+<p-dialog
+  header="Add a new project"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '30vw' }"
+  [closable]="false"
+>
+ 
+    <form [formGroup]="resourceForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid content">
+        <div class="p-field field">
+          <label for="resourceName">Name</label>
+          <input
+            id="resourceName"
+            type="text"
+            pInputText
+            formControlName="resourceName"
+            [required]="true"
+          />
+        </div>
+
+        <div class="p-field field">
+          <label for="resourceLastName">Last Name</label>
+          <input
+            id="resourceLastName"
+            type="text"
+            pInputText
+            formControlName="resourceLastName"
+            [required]="true"
+          />
+        </div>
+
+        <div class="p-field field">
+          <label for="resourceRole">Role</label>
+          <input
+            id="resourceRole"
+            type="text"
+            pInputText
+            formControlName="resourceRole"
+            [required]="true"
+          />
+        </div>
+        
+      </div>
+      
+        <div class="btns">
+          <p-button
+            label="Create"
+            icon="pi pi-check"
+            styleClass="p-button-outlined p-button-primary"
+            type="submit"
+          ></p-button>
+          <p-button
+            label="Cancel"
+            icon="pi pi-times"
+            styleClass="p-button-outlined p-button-danger"
+            (click)="close.emit()"
+          ></p-button>
+        </div>
+      
+    </form>
+
+</p-dialog>
+
+<p-toast></p-toast>

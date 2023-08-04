@@ -7,12 +7,34 @@
   <p-button
     label="Assign resource to project"
     icon="pi pi-user-plus"
+    (click)="this.assignResourceVisible = true"
   ></p-button>
+  <p-button
+  label="Create notification"
+  icon="pi pi-file"
+  (click)="this.notificationVisible = true"
+></p-button>
 </section>
+
+<app-project-resource-dialog
+  [visible]="assignResourceVisible"
+  (close)="onAssignResourceClose()"
+></app-project-resource-dialog>
+
+
 <app-new-project-dialog
   [visible]="newProjectVisible"
   (close)="onNewProjectClose()"
+  (notify)="onNewProjectNotify()"
 ></app-new-project-dialog>
+
+<app-notifications-dialog
+  [visible]="notificationVisible"
+  (close)="onNotificationClose()"
+  (refresh)="onNotificationRefresh()"
+></app-notifications-dialog>
+
+
 <div class="table">
-  <app-projects-table></app-projects-table>
+  <app-projects-table [recreate]="recreate"></app-projects-table>
 </div>

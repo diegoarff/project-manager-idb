@@ -1,1 +1,13 @@
-<p>reports works!</p>
+<section class="btn-section">
+    <p-dropdown  [options]="projects" optionLabel="title" (onChange)="onSelectedProject($event.value)" [filter]="true"
+    filterBy="title" placeholder="Select a project"></p-dropdown>
+
+    <p-dropdown  [options]="reports"  (onChange)="onSelectedReport($event.value)" ></p-dropdown>
+
+    <p-button (click)="generateReport()" label="Generate report"></p-button>
+
+    
+</section>
+<div class="container">
+    <p-chart type="line" [data]="data" [options]="options"></p-chart>
+</div>
